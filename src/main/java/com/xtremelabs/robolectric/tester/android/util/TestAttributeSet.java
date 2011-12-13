@@ -6,7 +6,8 @@ import com.xtremelabs.robolectric.res.AttrResourceLoader;
 import com.xtremelabs.robolectric.res.ResourceExtractor;
 import com.xtremelabs.robolectric.util.I18nException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestAttributeSet implements AttributeSet {
     Map<String, String> attributes = new HashMap<String, String>();
@@ -14,15 +15,15 @@ public class TestAttributeSet implements AttributeSet {
     private AttrResourceLoader attrResourceLoader;
     private Class<? extends View> viewClass;
     private boolean isSystem = false;
-    
+
     /**
      * Names of attributes to be validated for i18n-safe values.
      */
     private static final String strictI18nAttrs[] = {
-    		"android:text",
-    		"android:title",
-    		"android:titleCondensed",
-    		"android:summary"
+            "android:text",
+            "android:title",
+            "android:titleCondensed",
+            "android:summary"
     };
 
     public TestAttributeSet() {
@@ -131,7 +132,14 @@ public class TestAttributeSet implements AttributeSet {
     @Override
     public int getAttributeResourceValue(String namespace, String attribute, int defaultValue) {
         String value = getAttributeValueInMap(namespace, attribute);
-        return (value != null) ? resourceExtractor.getResourceId(value) : defaultValue;
+        if (value == null) {
+            return defaultValue;
+        }
+        Integer resourceId = resourceExtractor.getResourceId(value);
+        if (resourceId == null) {
+            throw new RuntimeException(value + " does not exist in R file");
+        }
+        return resourceId;
     }
 
     @Override
@@ -175,18 +183,18 @@ public class TestAttributeSet implements AttributeSet {
     public int getStyleAttribute() {
         throw new UnsupportedOperationException();
     }
-    
+
     public void validateStrictI18n() {
-    	for (int i = 0; i < strictI18nAttrs.length; i++) {
-    		String key = strictI18nAttrs[i];
-    		if (attributes.containsKey(key)) {
-    			String value =  attributes.get(key);
-    			if (!value.startsWith("@string/")) {
-		    	    throw new I18nException("View class: " + (viewClass != null ? viewClass.getName() : "") + 
-		    	    		" has attribute: " + key + " with hardcoded value: \"" + value + "\" and is not i18n-safe.");
-    			}
-    	    }
-    	}
+        for (int i = 0; i < strictI18nAttrs.length; i++) {
+            String key = strictI18nAttrs[i];
+            if (attributes.containsKey(key)) {
+                String value = attributes.get(key);
+                if (!value.startsWith("@string/")) {
+                    throw new I18nException("View class: " + (viewClass != null ? viewClass.getName() : "") +
+                            " has attribute: " + key + " with hardcoded value: \"" + value + "\" and is not i18n-safe.");
+                }
+            }
+        }
     }
 
     private String getAttributeValueInMap(String namespace, String attribute) {
@@ -199,7 +207,7 @@ public class TestAttributeSet implements AttributeSet {
 
             if (mappedKeys[1].equals(attribute) && (
                     namespace == null || namespace != "android" ||
-                    (namespace.equals("android") && namespace.equals(mappedKeys[0])) )) {
+                            (namespace.equals("android") && namespace.equals(mappedKeys[0])))) {
                 value = attributes.get(key);
                 break;
             }

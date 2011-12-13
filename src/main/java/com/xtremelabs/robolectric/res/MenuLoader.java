@@ -1,24 +1,22 @@
 package com.xtremelabs.robolectric.res;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-
 import com.xtremelabs.robolectric.tester.android.util.TestAttributeSet;
 import com.xtremelabs.robolectric.util.I18nException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MenuLoader extends XmlLoader {
     private Map<String, MenuNode> menuNodesByMenuName = new HashMap<String, MenuNode>();
@@ -169,6 +167,7 @@ public class MenuLoader extends XmlLoader {
                         MenuItem menuItem = root.add(groupId, attributes
                                 .getAttributeResourceValue("android", "id", 0),
                                 0, attributes.getAttributeValue("android", "title"));
+                        menuItem.setEnabled(attributes.getAttributeBooleanValue("android", "enabled", true));
                     }
                 } else if (name.equals("group")) {
                     int newGroupId = attributes.getAttributeResourceValue("android", "id", 0);

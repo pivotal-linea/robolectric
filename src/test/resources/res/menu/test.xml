@@ -3,4 +3,8 @@
 		android:title="Test menu item 1" />
     <item android:id="@+id/test_menu_2"
 		android:title="Test menu item 2" />
+    <item android:id="@+id/disabled_menu_item"
+		android:title="Disabled Menu Item"
+        android:enabled="false"
+        />
 </menu>

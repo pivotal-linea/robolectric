@@ -46,6 +46,7 @@ public final class R {
         public static final int test_menu_1 = nextId++;
         public static final int test_menu_2 = nextId++;
         public static final int test_menu_3 = nextId++;
+        public static final int disabled_menu_item = nextId++;
         
         public static final int group_id_1 = nextId++;
         

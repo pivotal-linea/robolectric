@@ -9,9 +9,10 @@ import com.xtremelabs.robolectric.tester.android.view.TestMenuItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(WithTestDefaultsRunner.class)
 public class MenuInflaterTest {
@@ -31,4 +32,13 @@ public class MenuInflaterTest {
         assertNotNull(menu.findItem(R.id.test_menu_1));
     }
 
+    @Test
+    public void disabledMenuItemShouldBeDisabled() {
+        TestMenu menu = new TestMenu(Robolectric.application);
+        new MenuInflater(Robolectric.application).inflate(R.menu.test, menu);
+
+        TestMenuItem testMenuItem = menu.findMenuItem("Disabled Menu Item");
+
+        assertThat(testMenuItem.isEnabled(), is(false));
+    }
 }
